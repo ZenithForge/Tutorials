@@ -27,7 +27,7 @@ Tasks live in memory, so any change is lost when the server restarts.
 
 ## Getting started
 
-Requires Node.js 18+.
+Requires Node.js 20+.
 
 1. Build the widget. The server reads `web/dist/component.js`, so do this first:
 
@@ -42,11 +42,19 @@ Requires Node.js 18+.
    ```bash
    cd server
    npm install
-   npx tsx src/index.ts
+   npm start
    ```
 
    The MCP endpoint is at `http://localhost:3000/mcp`.
 
-3. Connect it to ChatGPT or another MCP client. For ChatGPT, expose the local server with a public HTTPS tunnel such as ngrok, then add the tunnel URL plus `/mcp` as a connector.
+3. Test it with [MCPJam](https://github.com/MCPJam/inspector), which emulates the ChatGPT client locally, so you don't need a tunnel or a ChatGPT account:
+
+   ```bash
+   npx @mcpjam/inspector@latest
+   ```
+
+   Add an HTTP server at `http://localhost:3000/mcp`, then invoke `show_task_board` from the Playground to render the widget.
+
+   To run it inside ChatGPT instead, you need developer mode and a public HTTPS tunnel. Add the tunnel URL plus `/mcp` as a connector.
 
 Run `npm run build` in `web/` again after each UI change. The server reads the bundle on every request, so you don't need to restart it.
