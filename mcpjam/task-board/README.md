@@ -6,7 +6,7 @@ A small ChatGPT App built on the Model Context Protocol (MCP). The server expose
 
 ```
 .
-├── server/          MCP server (Express + @modelcontextprotocol/sdk)
+├── server/          MCP server (Express + @modelcontextprotocol/server)
 │   └── src/
 │       ├── index.ts     HTTP entry point, serves /mcp on port 3000
 │       └── server.ts    Tools and the UI resource
