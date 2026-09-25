@@ -1,7 +1,7 @@
 // MCP server definition for the task board ChatGPT App: data tools
 // (list_tasks, complete_task), the render tool (show_task_board), and the
 // UI resource that serves the bundled web component.
-import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
+import { McpServer } from "@modelcontextprotocol/server";
 import {
   registerAppResource,
   RESOURCE_MIME_TYPE,
@@ -16,6 +16,8 @@ const TaskSchema = z.object({
   title: z.string(),
   done: z.boolean(),
 });
+
+const TaskListSchema = z.object({ tasks: z.array(TaskSchema) });
 
 // In-memory data for the tutorial. Use a real data store in production.
 const tasks = [
@@ -40,8 +42,8 @@ export function createServer() {
       title: "List tasks",
       description:
         "Use this when the user wants to find or review their tasks. Returns tasks with id, title, and done status.",
-      inputSchema: { status: z.enum(["open", "done"]).optional() },
-      outputSchema: { tasks: z.array(TaskSchema) },
+      inputSchema: z.object({ status: z.enum(["open", "done"]).optional() }),
+      outputSchema: TaskListSchema,
       annotations: {
         readOnlyHint: true,
         destructiveHint: false,
@@ -65,8 +67,8 @@ export function createServer() {
     {
       title: "Complete task",
       description: "Use this when the user wants to mark a task as done.",
-      inputSchema: { taskId: z.string() },
-      outputSchema: { tasks: z.array(TaskSchema) },
+      inputSchema: z.object({ taskId: z.string() }),
+      outputSchema: TaskListSchema,
       annotations: {
         readOnlyHint: false,
         destructiveHint: false,
@@ -101,8 +103,8 @@ function registerRenderTool(server: McpServer) {
       title: "Show task board",
       description:
         "Render the task board UI. Always call list_tasks first, then pass its tasks to this tool.",
-      inputSchema: { tasks: z.array(TaskSchema) },
-      outputSchema: { tasks: z.array(TaskSchema) },
+      inputSchema: TaskListSchema,
+      outputSchema: TaskListSchema,
       annotations: {
         readOnlyHint: true,
         destructiveHint: false,
